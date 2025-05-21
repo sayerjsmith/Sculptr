@@ -5,12 +5,11 @@
   <title>Molder — 3D Modeler</title>
   <style>
     body, html {
-      margin: 0; 
-      height: 100vh; 
-      overflow: hidden; 
-      background: #1e1e1e; 
-      color: #ddd; 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      background: #1e1e1e;
+      font-family: sans-serif;
       user-select: none;
     }
     #ui {
@@ -18,24 +17,22 @@
       top: 12px;
       left: 12px;
       background: rgba(40, 40, 40, 0.9);
-      padding: 14px 20px;
-      border-radius: 12px;
+      padding: 12px 20px;
+      border-radius: 10px;
       display: flex;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
       z-index: 10;
-      box-shadow: 0 0 15px #0008;
     }
     button {
-      background: #3a3a3a;
+      background: #333;
+      color: #fff;
       border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      color: #ddd;
-      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s;
       font-size: 14px;
-      user-select: none;
+      font-weight: 500;
     }
     button:hover {
       background: #555;
@@ -50,4 +47,15 @@
   <div id="ui">
     <button id="addCube">Add Cube</button>
     <button id="addSphere">Add Sphere</button>
-    <button id="addCylinder">Add Cylinder</button
+    <button id="addCylinder">Add Cylinder</button>
+    <button id="deleteSelected">Delete</button>
+    <button id="resetCamera">Reset View</button>
+    <button id="export">Export Model</button>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/TransformControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/exporters/GLTFExporter.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,10 +1,10 @@
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x1e1e1e);
 
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(5, 5, 10);
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -15,9 +15,9 @@ const transformControls = new THREE.TransformControls(camera, renderer.domElemen
 scene.add(transformControls);
 
 const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(4, 10, 8);
+light.position.set(10, 10, 10);
 scene.add(light);
-scene.add(new THREE.AmbientLight(0x888888));
+scene.add(new THREE.AmbientLight(0x444444));
 
 const gridHelper = new THREE.GridHelper(20, 20);
 scene.add(gridHelper);
@@ -27,16 +27,15 @@ const objects = [];
 
 function createMaterial() {
   return new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(Math.random(), 0.6, 0.6),
+    color: new THREE.Color().setHSL(Math.random(), 0.5, 0.5),
     roughness: 0.4,
-    metalness: 0.3
+    metalness: 0.2
   });
 }
 
 function addShape(geometry) {
   const mesh = new THREE.Mesh(geometry, createMaterial());
   mesh.position.set(0, 1, 0);
-  mesh.rotation.y = Math.random() * Math.PI;
   mesh.userData.rotate = true;
   scene.add(mesh);
   objects.push(mesh);
@@ -68,13 +67,27 @@ document.getElementById('resetCamera').onclick = () => {
   orbitControls.update();
 };
 
+document.getElementById('export').onclick = () => {
+  const exporter = new THREE.GLTFExporter();
+  exporter.parse(
+    scene,
+    result => {
+      const blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'scene.glb';
+      link.click();
+    },
+    { binary: false }
+  );
+};
+
 window.addEventListener('pointerdown', (event) => {
   if (event.target !== renderer.domElement) return;
   const mouse = new THREE.Vector2(
     (event.clientX / window.innerWidth) * 2 - 1,
     -(event.clientY / window.innerHeight) * 2 + 1
   );
-
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(objects);
@@ -90,33 +103,19 @@ transformControls.addEventListener('dragging-changed', e => {
 });
 
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-document.getElementById('export').onclick = () => {
-  const exporter = new THREE.GLTFExporter();
-  exporter.parse(
-    scene,
-    gltf => {
-      const blob = new Blob([JSON.stringify(gltf)], {type: 'application/json'});
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'scene.glb';
-      link.click();
-    },
-    { binary: false }
-  );
-};
-
-// Animate
 function animate() {
   requestAnimationFrame(animate);
   orbitControls.update();
 
-  for (const obj of objects) {
-    if (obj.userData.rotate) obj.rotation.y += 0.003;
+  for (let obj of objects) {
+    if (obj.userData.rotate) {
+      obj.rotation.y += 0.003;
+    }
   }
 
   renderer.render(scene, camera);
